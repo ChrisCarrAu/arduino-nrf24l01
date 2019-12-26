@@ -38,13 +38,13 @@ void setup() {
 }
 
 void loop() {
-  // Transmit button change TO the other Arduino
-  //delay(10);
-
   NRF24L01.stopListening();
 
-  buttonState = digitalRead(MOMENT_BUTTON);   // Test for button press on THIS board
-  if (buttonState == LOW) { //button is pulled up so test for LOW
+  // Test for button press on THIS board
+  buttonState = digitalRead(MOMENT_BUTTON);
+
+  // Button is pulled up so test for LOW
+  if (buttonState == LOW) { 
     // Send LOW state to other Arduino board
 
     buttonState = 200;
@@ -57,27 +57,6 @@ void loop() {
       flashLed(YELLOW_LED);
     }
   }
-
-/*  buttonState = HIGH;//reset the button state variable
-
-  // Receive button change FROM the other Arduino
-  delay(10);
-
-  NRF24L01.startListening();
-  if (NRF24L01.available()) {   //do we have transmission from other Arduino board
-    NRF24L01.read(&buttonState, sizeof(buttonState));//update the variable with new state
-    NRF24L01.stopListening();
-  }
-
-  if (buttonState == HIGH) { //test the other Arduino's button state
-    digitalWrite(RED_LED, LOW);
-  }
-  else {
-    flashLed(RED_LED, 5);//indicate that the button was pressed on the other board
-  }
-
-  buttonState = HIGH;//reset the button state variable
-*/
 }
 
 void flashLed(int led, int count, int milliseconds)

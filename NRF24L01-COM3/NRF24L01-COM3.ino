@@ -27,16 +27,11 @@ void setup() {
 
   NRF24L01.begin(); //open the pipes to read and write from board 1
   NRF24L01.openReadingPipe(1, address[1]);//open reading pipe from address pipe 2
-  NRF24L01.openWritingPipe(address[0]);//open writing pipe to address pipe 1
+  NRF24L01.openWritingPipe(address[0]);   // open writing pipe to address pipe 1
 
-  // This is the only difference in the two sketches required
-  // the two lines below are for board two, notice how the reading and writing pipes are reversed
-
-//NRF24L01.openReadingPipe(1, address[0]);//open reading pipe from address pipe 1
-//NRF24L01.openWritingPipe(address[1]);//open writing pipe to address pipe 2
-
-  NRF24L01.setPALevel(RF24_PA_MIN);//set RF power output to minimum, RF24_PA_MIN (change to RF24_PA_MAX if required)
-  NRF24L01.setDataRate(RF24_250KBPS);//set data rate to 250kbps
+  // Set RF power output to minimum, RF24_PA_MIN (change to RF24_PA_MAX if required)
+  NRF24L01.setPALevel(RF24_PA_MIN);
+  NRF24L01.setDataRate(RF24_250KBPS);
 
   // If the frequency of 110 below is a problem with other wi-fi for you increment by 1 until it is ok
   // Don't forget that both sets of code must have the same frequency
@@ -44,43 +39,27 @@ void setup() {
 }
 
 void loop() {
-/*  // Transmit button change TO the other Arduino
-  delay(10);
-*/
-//  NRF24L01.stopListening();
-/*
-  buttonState = digitalRead(MOMENT_BUTTON);   // Test for button press on THIS board
-  if (buttonState == LOW) { //button is pulled up so test for LOW
-    // Send LOW state to other Arduino board
-    if (!NRF24L01.write(&buttonState, sizeof(buttonState))) {
-      // No acknowledgement of receipt by reciever
-      Serial.println("Signal not recieved.");
-    }
-    else {
-      // Flash the yellow LED to show progress
-      flashLed(YELLOW_LED, 1, 100);
-    }
-  }
-
-  buttonState = HIGH;//reset the button state variable
-*/
-  // Receive button change FROM the other Arduino
-//  delay(10);
-
+  // Clear the read buffer and start receiving
   NRF24L01.startListening();
-  if (NRF24L01.available()) {   //do we have transmission from other Arduino board
-    NRF24L01.read(&buttonState, sizeof(buttonState));//update the variable with new state
+
+  // Do we have transmission from other Arduino board
+  if (NRF24L01.available()) {   
+    //update the variable with new state
+    NRF24L01.read(&buttonState, sizeof(buttonState));
     NRF24L01.stopListening();
   }
 
-  if (buttonState != 200) { //test the other Arduino's button state
+  if (buttonState != 200) { 
+    // Test the other Arduino's button state
     digitalWrite(RED_LED, LOW);
   }
   else {
-    flashLed(RED_LED, 5);//indicate that the button was pressed on the other board
+    // Indicate that the button was pressed on the other board
+    flashLed(RED_LED, 5);
   }
 
-  buttonState = 0;//reset the button state variable
+  // Reset the button state variable
+  buttonState = 0;
 }
 
 void flashLed(int led, int count, int milliseconds)
